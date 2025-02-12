@@ -1,0 +1,33 @@
+version: "3.8"
+services:
+  openwebui:
+    image: ghcr.io/open-webui/open-webui:main
+    container_name: openwebui
+    ports:
+      - "3000:8080"
+    volumes:
+      - openwebui_data:/app/backend/data
+    restart: always
+    depends_on:
+      - ollama
+    # Caso o OpenWebUI precise apontar para a URL do Ollama, você pode setar uma variável de ambiente
+    environment:
+      - OLLAMA_URL=http://ollama:8000
+
+  ollama:
+    build:
+      context: ./ollama
+      dockerfile: Dockerfile
+    container_name: ollama
+    ports:
+      - "8000:8000"
+    volumes:
+      - ollama_data:/data/ollama
+    restart: always
+    environment:
+      # Defina aqui a lista de modelos que deseja baixar, separados por vírgula.
+      - MODEL_LIST=
+
+volumes:
+  openwebui_data:
+  ollama_data:
